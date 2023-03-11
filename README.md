@@ -1,6 +1,7 @@
 # Ilogger
 
-Ilogger is a library for customized logging and debugging in Spring Boot applications. It provides a simple way to intercept and log HTTP requests and responses, as well as custom log messages.
+Ilogger is intended to be a library for customized logging and debugging in Spring Boot applications. It provides a simple way to intercept and log HTTP requests and responses, as well as custom log messages.
+This is the actual project.
 
 ## Table of Contents
 
