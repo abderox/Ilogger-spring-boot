@@ -72,17 +72,28 @@ This is the actual project.
     mvn spring-boot:run
 ```
 
-- Then, you can access the following endpoints:
+- Then, you can access the following endpoints: I have provided a TestController for testing purposes.
 
 ```bash
     http://localhost:8000/hello-test
 ```
 
+```bash
+    http://localhost:8000/hello-test-2
+```
+
 <p
     align="center"
 >
+<span>Info level</span>
     <img
         src="./log.png"
+        alt="log"
+        width="100%"
+    />
+<span>Severe level</span>
+<img
+        src="./log2.png"
         alt="log"
         width="100%"
     />

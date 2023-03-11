@@ -15,7 +15,7 @@ import java.util.Map;
 public class TestController {
 
 
-    @ILog(level = Levels.WTF , keys = {"HttpRes","Done"})
+    @ILog(level = Levels.SEVERE , keys = {"HttpRes","Done"})
     @GetMapping("/hello-test")
     public String res() {
         Map<String, List<String>> map = new HashMap<>();
