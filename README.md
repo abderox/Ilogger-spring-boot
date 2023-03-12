@@ -22,7 +22,7 @@ This is the actual project.
 
 - The default port is `8080` for the websocket server.
 - The html page to see log reports , is located at [web-logger](https://github.com/abderox/Ilogger-spring-boot/tree/main/web-logger) directory.
-- You can also open it directly when the server launches up through http://localhost:8080/index.html
+- You can also open it directly when the server launches up through http://localhost:8080/index.html, but make sure the server is running and the file is in `resources/static` directory.
 
 ## Getting Started
 
