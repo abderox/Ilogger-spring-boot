@@ -113,7 +113,7 @@ This is the actual project.
     />
 <span>Html report</span>
 <img
-        src="./log-viewer.png"
+        src="./log-viewer-2.png"
         alt="log"
         width="100%"
     />

@@ -33,15 +33,34 @@
       <h1>Log Viewer for ilogger</h1>
     </div>
   </div>
+  <label for="level-filter" class="mt-4">Filter by level:</label>
+  <div class=" d-flex justify-content-between">
+    <div class="" style="width: 80%;">
+      <select class="form-control p-2" id="level-filter">
+        <option value="">All</option>
+        <option value="SEVERE">SEVERE</option>
+        <option value="WARNING">WARNING</option>
+        <option value="INFO">INFO</option>
+        <option value="FINE">FINE</option>
+        <option value="FINER">FINER</option>
+        <option value="FINEST">FINEST</option>
+        <option value="WTF">WTF</option>
+        <option value="NORMAL">NORMAL</option>
+      </select>
+    </div>
+    <div class="">
+      <button class="btn btn-primary" id="filter-button">Apply Filter</button>
+    </div>
+  </div>
   <div class="row ">
     <div class="col-md-12 ">
       <table class="table table-striped mt-5 ">
         <thead class="text-center font-weight-bold">
         <tr>
-          <th scope="col "class="text-danger">Time</th>
-          <th scope="col "class="text-danger">Log Level</th>
-          <th scope="col "class="text-danger">Method</th>
-          <th scope="col "class="text-danger">log</th>
+          <th scope="col" class="text-danger">Time</th>
+          <th scope="col" class="text-danger">Log Level</th>
+          <th scope="col" class="text-danger">Method</th>
+          <th scope="col" class="text-danger">log</th>
         </tr>
         </thead>
         <tbody id="log-table-body">
@@ -63,9 +82,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
 
 
-
 <script>
   const socket = new WebSocket('ws://localhost:8080/logs');
+  var logArray = [];
 
 
   //   SEVERE, WARNING, INFO, FINE, FINER, FINEST, WTF, NORMAL
@@ -82,6 +101,78 @@
           ]
   );
 
+  const filterButton = document.getElementById("filter-button");
+
+  filterButton.addEventListener("click", (event) => {
+    const levelFilter = document.getElementById("level-filter").value;
+    const logTableBody = document.getElementById("log-table-body");
+    logTableBody.innerHTML = "";
+    if (levelFilter === "") {
+      logArray.forEach((logData) => {
+        const row = document.createElement("tr");
+
+        const timeCell = document.createElement("td");
+        timeCell.textContent = logData.time;
+        timeCell.className = "text-primary";
+        row.appendChild(timeCell);
+
+        const levelCell = document.createElement("td");
+        levelCell.textContent = logData.level;
+        levelCell.classList.add(
+                "rounded",
+                "text-center",
+                "text-white",
+                map.get(logData.level)
+        )
+        row.appendChild(levelCell);
+
+        const messageCell = document.createElement("td");
+        messageCell.textContent = logData.message;
+        messageCell.className = "text-success";
+        row.appendChild(messageCell);
+
+        const contextCell = document.createElement("td");
+        contextCell.textContent = logData.context;
+        contextCell.className = "text-muted";
+        row.appendChild(contextCell);
+
+        logTableBody.appendChild(row);
+      });
+    } else {
+      logArray.forEach((logData) => {
+        if (logData.level === levelFilter) {
+          const row = document.createElement("tr");
+
+          const timeCell = document.createElement("td");
+          timeCell.textContent = logData.time;
+          timeCell.className = "text-primary";
+          row.appendChild(timeCell);
+
+          const levelCell = document.createElement("td");
+          levelCell.textContent = logData.level;
+          levelCell.classList.add(
+                  "rounded",
+                  "text-center",
+                  "text-white",
+                  map.get(logData.level)
+          )
+          row.appendChild(levelCell);
+
+          const messageCell = document.createElement("td");
+          messageCell.textContent = logData.message;
+          messageCell.className = "text-success";
+          row.appendChild(messageCell);
+
+          const contextCell = document.createElement("td");
+          contextCell.textContent = logData.context;
+          contextCell.className = "text-muted";
+          row.appendChild(contextCell);
+
+          logTableBody.appendChild(row);
+        }
+      });
+    }
+  });
 
   socket.addEventListener('open', (event) => {
     alert('WebSocket connected');
@@ -91,6 +182,7 @@
   socket.addEventListener('message', (event) => {
     console.log('Message from server:', event.data);
     const logData = JSON.parse(event.data);
+    logArray.push(logData);
 
     const logTableBody = document.getElementById("log-table-body");
 

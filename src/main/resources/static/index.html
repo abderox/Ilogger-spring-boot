@@ -2,59 +2,78 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log Viewer</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Viewer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
 <style>
-  html,
-  body {
-    height: 100%;
-  }
+    html,
+    body {
+        height: 100%;
+    }
 
-  #main-container {
-    min-height: 80%;
-  }
+    #main-container {
+        min-height: 80%;
+    }
 
-  #footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: auto;
-  }
+    #footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: auto;
+    }
 </style>
 
 <body>
 <div class="container pt-4" id="main-container">
-  <div class="row mt-5 bg-light py-4 rounded">
-    <div class="col-md-12 text-center ">
-      <h1>Log Viewer for ilogger</h1>
+    <div class="row mt-5 bg-light py-4 rounded">
+        <div class="col-md-12 text-center ">
+            <h1>Log Viewer for ilogger</h1>
+        </div>
     </div>
-  </div>
-  <div class="row ">
-    <div class="col-md-12 ">
-      <table class="table table-striped mt-5 ">
-        <thead class="text-center font-weight-bold">
-        <tr>
-          <th scope="col "class="text-danger">Time</th>
-          <th scope="col "class="text-danger">Log Level</th>
-          <th scope="col "class="text-danger">Method</th>
-          <th scope="col "class="text-danger">log</th>
-        </tr>
-        </thead>
-        <tbody id="log-table-body">
-        </tbody>
-      </table>
+    <label for="level-filter" class="mt-4">Filter by level:</label>
+    <div class=" d-flex justify-content-between">
+        <div class="" style="width: 80%;">
+            <select class="form-control p-2" id="level-filter">
+                <option value="">All</option>
+                <option value="SEVERE">SEVERE</option>
+                <option value="WARNING">WARNING</option>
+                <option value="INFO">INFO</option>
+                <option value="FINE">FINE</option>
+                <option value="FINER">FINER</option>
+                <option value="FINEST">FINEST</option>
+                <option value="WTF">WTF</option>
+                <option value="NORMAL">NORMAL</option>
+            </select>
+        </div>
+        <div class="">
+            <button class="btn btn-primary" id="filter-button">Apply Filter</button>
+        </div>
     </div>
-  </div>
+    <div class="row ">
+        <div class="col-md-12 ">
+            <table class="table table-striped mt-5 ">
+                <thead class="text-center font-weight-bold">
+                <tr>
+                    <th scope="col" class="text-danger">Time</th>
+                    <th scope="col" class="text-danger">Log Level</th>
+                    <th scope="col" class="text-danger">Method</th>
+                    <th scope="col" class="text-danger">log</th>
+                </tr>
+                </thead>
+                <tbody id="log-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </div>
 <footer class="bg-light py-2" id="footer">
-  <div class="container text-center">
-    <p>© 2023 Mouzafir. All rights reserved. <a href="https://github.com/abderox">GitHub Repository</a></p>
-  </div>
+    <div class="container text-center">
+        <p>© 2023 Mouzafir. All rights reserved. <a href="https://github.com/abderox">GitHub Repository</a></p>
+    </div>
 </footer>
 
 <!-- Bootstrap JavaScript -->
@@ -63,14 +82,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
 
 
-
 <script>
-  const socket = new WebSocket('ws://localhost:8080/logs');
+    const socket = new WebSocket('ws://localhost:8080/logs');
+    var logArray = [];
 
 
-  //   SEVERE, WARNING, INFO, FINE, FINER, FINEST, WTF, NORMAL
-  const map = new Map(
-          [
+    //   SEVERE, WARNING, INFO, FINE, FINER, FINEST, WTF, NORMAL
+    const map = new Map(
+        [
             ["SEVERE", "bg-danger"],
             ["WARNING", "bg-warning"],
             ["INFO", "bg-info"],
@@ -79,54 +98,127 @@
             ["FINEST", "bg-success"],
             ["WTF", "bg-dark"],
             ["NORMAL", "bg-light"]
-          ]
-  );
+        ]
+    );
 
+    const filterButton = document.getElementById("filter-button");
 
-  socket.addEventListener('open', (event) => {
-    alert('WebSocket connected');
-    console.log('WebSocket connected');
-  });
+    filterButton.addEventListener("click", (event) => {
+        const levelFilter = document.getElementById("level-filter").value;
+        const logTableBody = document.getElementById("log-table-body");
+        logTableBody.innerHTML = "";
+        if (levelFilter === "") {
+            logArray.forEach((logData) => {
+                const row = document.createElement("tr");
 
-  socket.addEventListener('message', (event) => {
-    console.log('Message from server:', event.data);
-    const logData = JSON.parse(event.data);
+                const timeCell = document.createElement("td");
+                timeCell.textContent = logData.time;
+                timeCell.className = "text-primary";
+                row.appendChild(timeCell);
 
-    const logTableBody = document.getElementById("log-table-body");
+                const levelCell = document.createElement("td");
+                levelCell.textContent = logData.level;
+                levelCell.classList.add(
+                    "rounded",
+                    "text-center",
+                    "text-white",
+                    map.get(logData.level)
+                )
+                row.appendChild(levelCell);
 
-    const row = document.createElement("tr");
+                const messageCell = document.createElement("td");
+                messageCell.textContent = logData.message;
+                messageCell.className = "text-success";
+                row.appendChild(messageCell);
 
-    const timeCell = document.createElement("td");
-    timeCell.textContent = logData.time;
-    timeCell.className = "text-primary";
-    row.appendChild(timeCell);
+                const contextCell = document.createElement("td");
+                contextCell.textContent = logData.context;
+                contextCell.className = "text-muted";
+                row.appendChild(contextCell);
 
-    const levelCell = document.createElement("td");
-    levelCell.textContent = logData.level;
-    levelCell.classList.add(
+                logTableBody.appendChild(row);
+            });
+        } else {
+            logArray.forEach((logData) => {
+                if (logData.level === levelFilter) {
+                    const row = document.createElement("tr");
+
+                    const timeCell = document.createElement("td");
+                    timeCell.textContent = logData.time;
+                    timeCell.className = "text-primary";
+                    row.appendChild(timeCell);
+
+                    const levelCell = document.createElement("td");
+                    levelCell.textContent = logData.level;
+                    levelCell.classList.add(
+                        "rounded",
+                        "text-center",
+                        "text-white",
+                        map.get(logData.level)
+                    )
+                    row.appendChild(levelCell);
+
+                    const messageCell = document.createElement("td");
+                    messageCell.textContent = logData.message;
+                    messageCell.className = "text-success";
+                    row.appendChild(messageCell);
+
+                    const contextCell = document.createElement("td");
+                    contextCell.textContent = logData.context;
+                    contextCell.className = "text-muted";
+                    row.appendChild(contextCell);
+
+                    logTableBody.appendChild(row);
+                }
+            });
+        }
+    });
+
+    socket.addEventListener('open', (event) => {
+        alert('WebSocket connected');
+        console.log('WebSocket connected');
+    });
+
+    socket.addEventListener('message', (event) => {
+        console.log('Message from server:', event.data);
+        const logData = JSON.parse(event.data);
+        logArray.push(logData);
+
+        const logTableBody = document.getElementById("log-table-body");
+
+        const row = document.createElement("tr");
+
+        const timeCell = document.createElement("td");
+        timeCell.textContent = logData.time;
+        timeCell.className = "text-primary";
+        row.appendChild(timeCell);
+
+        const levelCell = document.createElement("td");
+        levelCell.textContent = logData.level;
+        levelCell.classList.add(
             "rounded",
             "text-center",
             "text-white",
             map.get(logData.level)
-    )
-    row.appendChild(levelCell);
+        )
+        row.appendChild(levelCell);
 
-    const messageCell = document.createElement("td");
-    messageCell.textContent = logData.message;
-    messageCell.className = "text-success";
-    row.appendChild(messageCell);
+        const messageCell = document.createElement("td");
+        messageCell.textContent = logData.message;
+        messageCell.className = "text-success";
+        row.appendChild(messageCell);
 
-    const contextCell = document.createElement("td");
-    contextCell.textContent = logData.context;
-    contextCell.className = "text-muted";
-    row.appendChild(contextCell);
+        const contextCell = document.createElement("td");
+        contextCell.textContent = logData.context;
+        contextCell.className = "text-muted";
+        row.appendChild(contextCell);
 
-    logTableBody.appendChild(row);
-  });
+        logTableBody.appendChild(row);
+    });
 
-  socket.addEventListener('close', (event) => {
-    console.log('WebSocket disconnected');
-  });
+    socket.addEventListener('close', (event) => {
+        console.log('WebSocket disconnected');
+    });
 </script>
 </body>
 
