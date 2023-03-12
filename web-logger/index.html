@@ -27,106 +27,107 @@
 </style>
 
 <body>
-  <div class="container pt-4" id="main-container">
-    <div class="row mt-5 bg-light py-4 rounded">
-      <div class="col-md-12 text-center ">
-        <h1>Log Viewer for ilogger</h1>
-      </div>
+<div class="container pt-4" id="main-container">
+  <div class="row mt-5 bg-light py-4 rounded">
+    <div class="col-md-12 text-center ">
+      <h1>Log Viewer for ilogger</h1>
     </div>
-    <div class="row ">
-      <div class="col-md-12 ">
-        <table class="table table-striped mt-5 ">
-          <thead class="text-center font-weight-bold">
-            <tr>
-              <th scope="col "class="text-danger">Time</th>
-              <th scope="col "class="text-danger">Log Level</th>
-              <th scope="col "class="text-danger">Method</th>
-              <th scope="col "class="text-danger">log</th>
-            </tr>
-          </thead>
-          <tbody id="log-table-body">
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </div>
-  <footer class="bg-light py-2" id="footer">
-    <div class="container text-center">
-      <p>© 2023 Mouzafir. All rights reserved. <a href="https://github.com/abderox">GitHub Repository</a></p>
+  <div class="row ">
+    <div class="col-md-12 ">
+      <table class="table table-striped mt-5 ">
+        <thead class="text-center font-weight-bold">
+        <tr>
+          <th scope="col "class="text-danger">Time</th>
+          <th scope="col "class="text-danger">Log Level</th>
+          <th scope="col "class="text-danger">Method</th>
+          <th scope="col "class="text-danger">log</th>
+        </tr>
+        </thead>
+        <tbody id="log-table-body">
+        </tbody>
+      </table>
     </div>
-  </footer>
+  </div>
 
-  <!-- Bootstrap JavaScript -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+</div>
+<footer class="bg-light py-2" id="footer">
+  <div class="container text-center">
+    <p>© 2023 Mouzafir. All rights reserved. <a href="https://github.com/abderox">GitHub Repository</a></p>
+  </div>
+</footer>
 
-
-
-  <script>
-    const socket = new WebSocket('ws://localhost:8080/logs');
-
-    
-    //   SEVERE, WARNING, INFO, FINE, FINER, FINEST, WTF, NORMAL
-    const map = new Map(
-      [
-        ["SEVERE", "bg-danger"],
-        ["WARNING", "bg-warning"],
-        ["INFO", "bg-info"],
-        ["FINE", "bg-success"],
-        ["FINER", "bg-success"],
-        ["FINEST", "bg-success"],
-        ["WTF", "bg-dark"],
-        ["NORMAL", "bg-light"]
-      ]
-    );
+<!-- Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
 
 
-    socket.addEventListener('open', (event) => {
-      console.log('WebSocket connected');
-    });
 
-    socket.addEventListener('message', (event) => {
-      console.log('Message from server:', event.data);
-      const logData = JSON.parse(event.data);
+<script>
+  const socket = new WebSocket('ws://localhost:8080/logs');
 
-      const logTableBody = document.getElementById("log-table-body");
 
-      const row = document.createElement("tr");
+  //   SEVERE, WARNING, INFO, FINE, FINER, FINEST, WTF, NORMAL
+  const map = new Map(
+          [
+            ["SEVERE", "bg-danger"],
+            ["WARNING", "bg-warning"],
+            ["INFO", "bg-info"],
+            ["FINE", "bg-success"],
+            ["FINER", "bg-success"],
+            ["FINEST", "bg-success"],
+            ["WTF", "bg-dark"],
+            ["NORMAL", "bg-light"]
+          ]
+  );
 
-      const timeCell = document.createElement("td");
-      timeCell.textContent = logData.time;
-      timeCell.className = "text-primary";
-      row.appendChild(timeCell);
 
-      const levelCell = document.createElement("td");
-      levelCell.textContent = logData.level;
-      levelCell.classList.add(
-        "rounded",
-        "text-center",
-        "text-white",
-        map.get(logData.level)
-      )
-      row.appendChild(levelCell);
+  socket.addEventListener('open', (event) => {
+    alert('WebSocket connected');
+    console.log('WebSocket connected');
+  });
 
-      const messageCell = document.createElement("td");
-      messageCell.textContent = logData.message;
-      messageCell.className = "text-success";
-      row.appendChild(messageCell);
+  socket.addEventListener('message', (event) => {
+    console.log('Message from server:', event.data);
+    const logData = JSON.parse(event.data);
 
-      const contextCell = document.createElement("td");
-      contextCell.textContent = logData.context;
-      contextCell.className = "text-muted";
-      row.appendChild(contextCell);
-      
-      logTableBody.appendChild(row);
-    });
+    const logTableBody = document.getElementById("log-table-body");
 
-    socket.addEventListener('close', (event) => {
-      console.log('WebSocket disconnected');
-    });
-  </script>
+    const row = document.createElement("tr");
+
+    const timeCell = document.createElement("td");
+    timeCell.textContent = logData.time;
+    timeCell.className = "text-primary";
+    row.appendChild(timeCell);
+
+    const levelCell = document.createElement("td");
+    levelCell.textContent = logData.level;
+    levelCell.classList.add(
+            "rounded",
+            "text-center",
+            "text-white",
+            map.get(logData.level)
+    )
+    row.appendChild(levelCell);
+
+    const messageCell = document.createElement("td");
+    messageCell.textContent = logData.message;
+    messageCell.className = "text-success";
+    row.appendChild(messageCell);
+
+    const contextCell = document.createElement("td");
+    contextCell.textContent = logData.context;
+    contextCell.className = "text-muted";
+    row.appendChild(contextCell);
+
+    logTableBody.appendChild(row);
+  });
+
+  socket.addEventListener('close', (event) => {
+    console.log('WebSocket disconnected');
+  });
+</script>
 </body>
 
 </html>
