@@ -18,9 +18,10 @@ This is the actual project.
 
 ```diff
 + The logs captured by the @Ilog annotation are now formated to be displayed in a more readable way, Html format.
-+ The default port is 8080 for the websocket server.
-+ The html page to see log reports , is located at web-report directory.
 ```
+
+- The default port is `8080` for the websocket server.
+- The html page to see log reports , is located at [web-logger](https://github.com/abderox/Ilogger-spring-boot/tree/main/web-logger) directory.
 
 ## Getting Started
 
