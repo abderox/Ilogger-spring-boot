@@ -5,6 +5,7 @@ This is the actual project.
 
 ## Table of Contents
 
+- [Latest Feature](#latest-feature)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Configuration](#Configuration)
@@ -12,6 +13,14 @@ This is the actual project.
 - [Authors](#Authors)
 - [Contributing](#Contributing)
 - [License](#license)
+
+## Latest Feature
+
+```diff
++ The logs captured by the @Ilog annotation are now formated to be displayed in a more readable way, Html format.
++ The default port is 8080 for the websocket server.
++ The html page to see log reports , is located at web-report directory.
+```
 
 ## Getting Started
 
@@ -64,6 +73,9 @@ This is the actual project.
     ilogger.annotation.enabled = false
 ```
 
+- If you feel like changing the colors or the emojis , go to [ILayout.java](https://github.com/abderox/Ilogger-spring-boot/blob/main/src/main/java/org/koar/koariloggerbeta/ilogger/ILayout.java)
+- If you feel like changing the format of the log report on the console , go to [CustomFormatter.java](https://github.com/abderox/Ilogger-spring-boot/blob/main/src/main/java/org/koar/koariloggerbeta/ilogger/CustomFormatter.java)
+
 ## Demo
 
 - To run the demo, you can use the following command:
@@ -75,11 +87,11 @@ This is the actual project.
 - Then, you can access the following endpoints: I have provided a TestController for testing purposes.
 
 ```bash
-    http://localhost:8000/hello-test
+    http://localhost:8080/hello-test
 ```
 
 ```bash
-    http://localhost:8000/hello-test-2
+    http://localhost:8080/hello-test-2
 ```
 
 <p
@@ -94,6 +106,12 @@ This is the actual project.
 <span>Severe level</span>
 <img
         src="./log2.png"
+        alt="log"
+        width="100%"
+    />
+<span>Html report</span>
+<img
+        src="./log-viewer.png"
         alt="log"
         width="100%"
     />
@@ -113,6 +131,8 @@ Any contributions you make are **greatly appreciated**.
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
+[Back to Table of Contents](#table-of-contents)
 
 
 

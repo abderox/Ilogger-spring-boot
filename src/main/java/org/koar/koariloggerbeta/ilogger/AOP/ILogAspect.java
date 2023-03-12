@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.koar.koariloggerbeta.ilogger.CustomFormatter;
 import org.koar.koariloggerbeta.ilogger.CustomHandler;
 import org.koar.koariloggerbeta.ilogger.LoggingContext;
+import org.koar.koariloggerbeta.ilogger.WS.MyWebSocketHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ import java.util.logging.Logger;
 public class ILogAspect {
 
 
+    MyWebSocketHandler myWebSocketHandler = new MyWebSocketHandler();
+
+
     @Around(value = "@annotation(iLog)", argNames = "joinPoint,iLog")
     public Object logAround(ProceedingJoinPoint joinPoint, ILog iLog) throws Throwable {
 //        System.out.println(count++);
@@ -31,7 +35,7 @@ public class ILogAspect {
         String level = iLog.level().name().equals(Levels.WTF.name()) ? Levels.SEVERE.name() : iLog.level().name();
         logger.setUseParentHandlers(false);
         CustomHandler handler = new CustomHandler();
-        handler.setFormatter(new CustomFormatter());
+        handler.setFormatter(new CustomFormatter(myWebSocketHandler));
         logger.addHandler(handler);
 
         try {
